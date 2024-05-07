@@ -14,21 +14,17 @@ function Register() {
   });
   const [formErrors, setFormErrors] = useState({});
   const navigate = useNavigate();
-
   const handleInput = (event) => {
     setValues((prev) => ({ ...prev, [event.target.name]: event.target.value }));
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setFormErrors(await Validation(values));
 
-    // Validate the form values
-    const errors = await Validation(values);
-    setFormErrors(errors);
-
-    if (Object.keys(errors).length === 0) {
+    if (Object.keys(formErrors).length === 0) {
       try {
-        const response = await fetch("/Register", {
+        const response = await fetch("/", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -164,7 +160,7 @@ function Register() {
               <div>
                 <span className="m-4">
                   Already Create an Account{" "}
-                  <Link className="text-blue-500" to="/Login">
+                  <Link className="text-blue-500" to="/">
                     Loign
                   </Link>
                 </span>

@@ -5,52 +5,46 @@ import { Link } from "react-router-dom";
 import Validation from "./LoginValidation";
 import { useNavigate } from "react-router-dom";
 
+function Login() {
+  const [values, setValues] = useState({
+    email: "",
+    password: "",
+  });
 
-  function Login() {
-    const [values, setValues] = useState({
-      email: "",
-      password: "",
+  const [formErrors, setFormErrors] = useState({});
+  const navigate = useNavigate();
+  const handleInput = (event) => {
+    setValues((prev) => ({
+      ...prev,
+      [event.target.name]: event.target.value,
+    }));
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    setFormErrors(await Validation(values));
+
+    const data = await fetch("/Login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email: values.email, password: values.password }),
     });
-  
-    const [formErrors, setFormErrors] = useState({});
-    const navigate = useNavigate();
-  
-    const handleInput = (event) => {
-      setValues((prev) => ({
-        ...prev,
-        [event.target.name]: event.target.value,
-      }));
-    };
-  
-    const handleSubmit = async (event) => {
-      event.preventDefault();
-  
-      setFormErrors(await Validation(values));
-  
-      if (Object.keys(formErrors).length === 0) {
-        const data = await fetch("/Login", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email: values.email, password: values.password }),
-        });
-  
-        const res = await data.json();
-        console.log(res);
-  
-        if (res.status === 201) {
-          alert("Login successful");
-          navigate("/dash");
-          localStorage.setItem("usersDataToken", res.result.token);
-          setValues({ ...values, email: "", password: "" });
-        } else {
-          alert(data.error || "Login failed");
-        }
-      } else {
-        console.error("Form validation errors:", formErrors);
-      }
-    };
+
+    const res = await data.json();
+    console.log(res);
+
+    if (res.status === 201) {
+      alert("Login successful");
+      navigate("/dash");
+      localStorage.setItem("usersDataToken", res.result.token);
+      setValues({ ...values, email: "", password: "" });
+    } else {
+      alert(data.error || "Login failed");
+    }
+  };
   return (
     <>
       <div>
@@ -117,7 +111,7 @@ import { useNavigate } from "react-router-dom";
               <div>
                 <span className="m-4">
                   New Here?{" "}
-                  <Link className="text-blue-500" to="/">
+                  <Link className="text-blue-500" to="/Register">
                     Create an Account
                   </Link>{" "}
                 </span>

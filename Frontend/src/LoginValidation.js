@@ -8,7 +8,7 @@ const Validation = async (values) => {
         errors.email = "This is not a valid email format";
     }
 
-    if (!values.password) { // Check if password doesn't exist
+    if (!values.password) {
         errors.password = "Password is required";
     } else if (values.password.length < 4 || values.password.length > 10) {
         errors.password = "Password must be between 4 and 10 characters";
