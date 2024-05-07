@@ -14,16 +14,19 @@ function Register() {
   });
   const [formErrors, setFormErrors] = useState({});
   const navigate = useNavigate();
+
   const handleInput = (event) => {
     setValues((prev) => ({ ...prev, [event.target.name]: event.target.value }));
-    console.log(values);
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setFormErrors(Validation(values));
 
-    if (Object.keys(formErrors).length === 0) {
+    // Validate the form values
+    const errors = await Validation(values);
+    setFormErrors(errors);
+
+    if (Object.keys(errors).length === 0) {
       try {
         const response = await fetch("/Register", {
           method: "POST",
